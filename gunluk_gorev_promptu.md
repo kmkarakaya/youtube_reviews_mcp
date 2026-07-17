@@ -7,7 +7,7 @@ Sıra: **1) Held moderasyonu → 2) Yayındaki yorumlara cevap → 3) Yapısal r
 
 ## ADIM 1: Held (incelemede bekleyen) yorumların moderasyonu
 
-- `list_held_comments` → `max_results=50`, `include_likely_spam=true`.
+- `list_held_comments` → `max_results=100`, `include_likely_spam=true`.
 - Her held yorum için:
   - ONAYLA yalnızca: negatiflik (küfür, hakaret, aşağılama, nefret, taciz, tehdit)
     YOK **ve** spam/reklam DEĞİL **ve** siyasi/ideolojik/imalı DEĞİL →
@@ -21,7 +21,8 @@ Sıra: **1) Held moderasyonu → 2) Yayındaki yorumlara cevap → 3) Yapısal r
 
 (Not: Adım 1'de onaylanan yorumlar artık yayında; burada da karşına çıkabilir.)
 
-- `list_recent_comments` → `only_unanswered=true`, `max_results=30`.
+- `list_recent_comments` → `only_unanswered=true`, `max_results=100`. Dönen TÜM
+  cevaplanmamış yorumları işle; ilk birkaçıyla yetinme.
 - **SİYASİ/İMALI** (cevap yazma): Siyasi/ideolojik/imalı/kışkırtıcı yorumlara
   tarafsızlık için **cevap yazma**; sadece raporda "cevaplanmadı: siyasi/imalı"
   olarak belirt. Örnek: "...TÜBİTAK diye güzide bir araştırma kurumumuz vardı ama işte".

@@ -109,7 +109,9 @@ def list_recent_comments(max_results: int = 25, only_unanswered: bool = True) ->
     channel_id, _ = _my_channel_id(youtube)
     replied_local = _load_replied()
 
-    max_results = max(1, min(int(max_results), 100))
+    # Tavan 500'e kadar; only_unanswered=True iken cevaplanmamışları bulmak için
+    # gerektiği kadar sayfa gezilir (her sayfa API'de en fazla 100 yorum).
+    max_results = max(1, min(int(max_results), 500))
     collected = []
     page_token = None
 
