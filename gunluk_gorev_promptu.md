@@ -23,8 +23,9 @@ Sıra: **1) Held moderasyonu → 2) Yayındaki yorumlara cevap → 3) Yapısal r
 
 (Not: Adım 1'de onaylanan yorumlar artık yayında; burada da karşına çıkabilir.)
 
-- `list_recent_comments` → `only_unanswered=true`, `max_results=100`. Dönen TÜM
-  cevaplanmamış yorumları işle; ilk birkaçıyla yetinme.
+- `list_recent_comments` → `only_unanswered=true`, `max_results=100`, `since_days=30`.
+  Yalnızca son 30 günün yorumları gelir; kanal sahibinin kendi yorumları listeye
+  girmez. Dönen TÜM yorumları işle; ilk birkaçıyla yetinme.
 - **SİYASİ/İMALI** (cevap yazma): Siyasi/ideolojik/imalı/kışkırtıcı yorumlara
   tarafsızlık için **cevap yazma**; sadece raporda "cevaplanmadı: siyasi/imalı"
   olarak belirt. Örnek: "...TÜBİTAK diye güzide bir araştırma kurumumuz vardı ama işte".

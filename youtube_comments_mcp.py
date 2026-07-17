@@ -93,13 +93,17 @@ def get_channel_info() -> dict:
 
 
 @mcp.tool()
-def list_recent_comments(max_results: int = 25, only_unanswered: bool = True) -> list:
+def list_recent_comments(max_results: int = 25, only_unanswered: bool = True,
+                         since_days: int = 0) -> list:
     """Kanala gelen son üst düzey yorumları getirir (en yeniden eskiye).
+    Kanal sahibinin KENDİ yorumları listeye dahil edilmez.
 
     Args:
-        max_results: Getirilecek yorum sayısı (1-100).
+        max_results: Getirilecek yorum sayısı (1-500).
         only_unanswered: True ise, kanal sahibinin cevaplamadığı ve daha önce
             bu araçla cevaplanmamış yorumları döner.
+        since_days: 0'dan büyükse, yalnızca son N gün içinde yazılmış yorumları
+            döner (daha eskileri atlar). Günlük tarama için önerilir (örn. 14).
 
     Döner: her biri şu alanları içeren yorum listesi:
         comment_id, author, text, published_at, like_count, video_id,
@@ -108,6 +112,10 @@ def list_recent_comments(max_results: int = 25, only_unanswered: bool = True) ->
     youtube = _get_service()
     channel_id, _ = _my_channel_id(youtube)
     replied_local = _load_replied()
+
+    cutoff = None
+    if since_days and int(since_days) > 0:
+        cutoff = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(days=int(since_days))
 
     # Tavan 500'e kadar; only_unanswered=True iken cevaplanmamışları bulmak için
     # gerektiği kadar sayfa gezilir (her sayfa API'de en fazla 100 yorum).
@@ -131,6 +139,23 @@ def list_recent_comments(max_results: int = 25, only_unanswered: bool = True) ->
             top_id = top["id"]
             sn = top["snippet"]
             total_replies = item["snippet"].get("totalReplyCount", 0)
+
+            # since_days filtresi: yorumlar en yeniden eskiye sıralı olduğundan,
+            # eşiğin gerisine düşen ilk yorumda tüm taramayı bitir.
+            if cutoff is not None:
+                pub = sn.get("publishedAt")
+                if pub:
+                    try:
+                        pub_dt = datetime.datetime.fromisoformat(pub.replace("Z", "+00:00"))
+                        if pub_dt < cutoff:
+                            return collected
+                    except Exception:
+                        pass
+
+            # Kanal sahibinin KENDİ yorumlarını (sabitlenmiş bilgi notları, linkler
+            # vb.) atla — bunlara cevap yazılmaz.
+            if sn.get("authorChannelId", {}).get("value") == channel_id:
+                continue
 
             # Kanal sahibi bu thread'e cevap vermiş mi?
             owner_replied = False
